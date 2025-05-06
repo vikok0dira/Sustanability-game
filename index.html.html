@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Choices for Change</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #d8e682;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: row;
+        }
+        #left-panel {
+            width: 40%;
+            background-color: #d8e682;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        #left-panel img {
+            max-width: 200px;
+        }
+        #right-panel {
+            width: 60%;
+            background-color: #c9e0f3;
+            padding: 40px;
+        }
+        .question-box {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .option {
+            display: block;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 30px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div id="left-panel">
+        <h1>Choices for Change</h1>
+        <p><em>A Sustainability Game</em></p>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/Planet_Earth_clip_art.svg" alt="Earth">
+    </div>
+    <div id="right-panel">
+        <div id="question-container" class="question-box">
+            <div id="question-text">Loading...</div>
+            <div id="options"></div>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Energy Transition: Your country wants to decarbonize. What’s your strategy?",
+                options: [
+                    "Invest in blue hydrogen from fossil gas",
+                    "Boost nuclear and keep natural gas as backup",
+                    "Rapidly expand solar and wind power",
+                    "Phase out coal and invest in grid-scale storage"
+                ],
+                scores: [0, 1, 3, 5],
+                feedback: "Consider prioritizing renewables and storage over transitional fossil-based solutions."
+            },
+            {
+                question: "Transport Policy: You’re tasked with slashing transport emissions. What’s your focus?",
+                options: [
+                    "Expand highways to ease traffic",
+                    "Subsidize electric car sales",
+                    "Invest in rail and active mobility",
+                    "Rebuild regional rail, tax aviation, and redesign cities"
+                ],
+                scores: [0, 1, 3, 5],
+                feedback: "Focusing solely on tech like electric cars isn’t enough. A shift to public transport is critical."
+            },
+            {
+                question: "Climate Justice: At a global climate summit, what policy do you back?",
+                options: [
+                    "Require all countries to cut emissions equally",
+                    "Offer emissions offsets to the highest bidder",
+                    "Push EU-led tech solutions globally",
+                    "Fund Global South renewables through carbon tax revenues"
+                ],
+                scores: [0, 1, 3, 5],
+                feedback: "Climate leadership means recognizing historic responsibility."
+            },
+            {
+                question: "Green Finance: Your business wants to act sustainably. What’s your move?",
+                options: [
+                    "Rebrand existing products as green",
+                    "Buy offsets and stay fossil-fuel-heavy",
+                    "Invest in clean tech startups with ESG scoring",
+                    "Issue green bonds for verified low-carbon projects"
+                ],
+                scores: [0, 1, 3, 5],
+                feedback: "Green labels aren’t always green. True impact comes from funding verifiable climate solutions."
+            },
+            {
+                question: "Housing Solutions: Energy poverty is rising. How do you respond?",
+                options: [
+                    "Let landlords decide on retrofitting",
+                    "Promote individual solar panel subsidies",
+                    "Focus on smart thermostats and apps",
+                    "Mandate building insulation in all rental housing"
+                ],
+                scores: [0, 1, 3, 5],
+                feedback: "Energy efficiency in all housing—especially rentals—is crucial to tackle energy poverty."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let totalScore = 0;
+        let feedbackList = [];
+
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById("question-text").textContent = (currentQuestion + 1) + ". " + q.question;
+            const optionsDiv = document.getElementById("options");
+            optionsDiv.innerHTML = "";
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement("button");
+                btn.textContent = opt;
+                btn.className = "option";
+                btn.onclick = () => {
+                    totalScore += q.scores[idx];
+                    if (q.scores[idx] < 5) feedbackList.push(q.feedback);
+                    currentQuestion++;
+                    if (currentQuestion < questions.length) {
+                        loadQuestion();
+                    } else {
+                        showResult();
+                    }
+                };
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function showResult() {
+            document.getElementById("question-container").style.display = "none";
+            const resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = `<strong>Your Score: ${totalScore}/25</strong><br><br>`;
+            if (feedbackList.length > 0) {
+                resultDiv.innerHTML += `<strong>Here’s what you can improve based on your score:</strong><ul>`;
+                feedbackList.forEach(msg => {
+                    resultDiv.innerHTML += `<li>👉 ${msg}</li>`;
+                });
+                resultDiv.innerHTML += `</ul>`;
+            } else {
+                resultDiv.innerHTML += "🌱 Excellent! You made the most sustainable choices at every step.";
+            }
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
